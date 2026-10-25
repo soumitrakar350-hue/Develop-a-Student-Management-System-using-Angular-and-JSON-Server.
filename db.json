@@ -1,0 +1,28 @@
+{
+  "students": [
+    {
+      "id": "1",
+      "studentNo": 1,
+      "name": "Amit Kumar",
+      "email": "amit@gmail.com",
+      "course": "MCA",
+      "age": 23
+    },
+    {
+      "id": "2",
+      "studentNo": 2,
+      "name": "Priya Sharma",
+      "email": "priya@gmail.com",
+      "course": "BTech",
+      "age": 21
+    },
+    {
+      "id": "3",
+      "studentNo": 3,
+      "name": "Rahul Das",
+      "email": "rahul@gmail.com",
+      "course": "BCA",
+      "age": 20
+    }
+  ]
+}

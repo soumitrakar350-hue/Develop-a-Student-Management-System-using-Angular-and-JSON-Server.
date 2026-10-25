@@ -1,0 +1,119 @@
+<app-navbar></app-navbar>
+<div class="min-h-screen bg-gray-100 p-6">
+  <div class="max-w-7xl mx-auto">
+    <h2 class="text-3xl font-extrabold text-center text-indigo-600 mb-8">
+      Student Management System
+    </h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <div class="bg-white rounded-xl shadow-md p-6 h-fit border border-gray-200">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">
+          {{ isEditMode ? '⚙️ Update Student Details' : '📝 Add New Student' }}
+        </h3>
+        
+        <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input type="text" formControlName="name" placeholder="Enter full name"
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   [ngClass]="{'border-red-500 ring-1 ring-red-500': studentForm.get('name')?.touched && studentForm.get('name')?.invalid}">
+            <p *ngIf="studentForm.get('name')?.touched && studentForm.get('name')?.invalid" class="text-xs text-red-500 mt-1">Name is required.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input type="email" formControlName="email" placeholder="name@example.com"
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   [ngClass]="{'border-red-500 ring-1 ring-red-500': studentForm.get('email')?.touched && studentForm.get('email')?.invalid}">
+            <div *ngIf="studentForm.get('email')?.touched && studentForm.get('email')?.invalid" class="text-xs text-red-500 mt-1">
+              <p *ngIf="studentForm.get('email')?.errors?.['required']">Email is required.</p>
+              <p *ngIf="studentForm.get('email')?.errors?.['email']">Enter a valid email address.</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Course</label>
+            <input type="text" formControlName="course" placeholder="e.g., MCA, BTech"
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   [ngClass]="{'border-red-500 ring-1 ring-red-500': studentForm.get('course')?.touched && studentForm.get('course')?.invalid}">
+            <p *ngIf="studentForm.get('course')?.touched && studentForm.get('course')?.invalid" class="text-xs text-red-500 mt-1">Course is required.</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+            <input type="number" formControlName="age" placeholder="Age (18 - 60)"
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                   [ngClass]="{'border-red-500 ring-1 ring-red-500': studentForm.get('age')?.touched && studentForm.get('age')?.invalid}">
+            <div *ngIf="studentForm.get('age')?.touched && studentForm.get('age')?.invalid" class="text-xs text-red-500 mt-1">
+              <p *ngIf="studentForm.get('age')?.errors?.['required']">Age is required.</p>
+              <p *ngIf="studentForm.get('age')?.errors?.['min'] || studentForm.get('age')?.errors?.['max']">Age must be between 18 and 60.</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <button type="submit" [disabled]="studentForm.invalid"
+                    [ngClass]="isEditMode ? 'bg-amber-500 hover:bg-amber-600' : 'bg-indigo-600 hover:bg-indigo-700'"
+                    class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              {{ isEditMode ? 'Update Record' : 'Add Student' }}
+            </button>
+            <button *ngIf="isEditMode" type="button" (click)="resetFormState()"
+                    class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+              Cancel Edit
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Display Students Table -->
+      <div class="col-span-1 lg:col-span-2 overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-md p-4">
+        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Registered Students Directory</h3>
+        <table class="min-w-full divide-y divide-gray-200 text-left text-sm text-gray-500">
+          <thead class="bg-gray-800 text-xs font-medium uppercase text-white">
+            <tr>
+              <th class="px-4 py-3">ID</th>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Course</th>
+              <th class="px-4 py-3">Age</th>
+              <th class="px-4 py-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            <tr *ngFor="let student of studentsList()" class="hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 font-bold text-gray-900 whitespace-nowrap">
+                {{ student.studentNo }}
+              </td>
+              <td class="px-4 py-3 font-semibold text-gray-800">{{ student.name }}</td>
+              <td class="px-4 py-3 whitespace-nowrap">{{ student.email }}</td>
+              <td class="px-4 py-3">
+                <span class="px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800">
+                  {{ student.course }}
+                </span>
+              </td>
+              <td class="px-4 py-3">{{ student.age }}</td>
+              
+              <td class="px-4 py-3 text-center whitespace-nowrap space-x-2">
+                <button type="button" (click)="onEdit(student)" 
+                        class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-medium py-1 px-2.5 rounded transition-colors text-xs">
+                  ✏️ Edit
+                </button>
+                <button type="button" (click)="onDelete(student.id)" 
+                        class="bg-red-100 hover:bg-red-200 text-red-800 font-medium py-1 px-2.5 rounded transition-colors text-xs">
+                  🗑️ Delete
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="studentsList().length === 0">
+              <td colspan="6" class="px-4 py-10 text-center text-gray-500 font-medium">
+                🔍 No student records found. Check if json-server is running on port 3000.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+<app-footer></app-footer>
